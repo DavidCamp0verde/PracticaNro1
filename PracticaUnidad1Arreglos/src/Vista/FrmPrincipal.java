@@ -7,9 +7,11 @@ package Vista;
 import Controlador.PersonaController;
 import Excepciones.FechaInvalidaException;
 import Modelo.Persona;
+import Vista.Utilidades.Utilidades;
 import Vista.modeloTabla.ModeloTablaPersona;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -19,12 +21,14 @@ public class FrmPrincipal extends javax.swing.JFrame {
     PersonaController pc = new PersonaController();
     ModeloTablaPersona mtp = new ModeloTablaPersona();
     DialogPersona diaPersona;
+    DialogPracticas diaPractica;
     
     /**
      * Creates new form FrmPrincipal
      */
     public FrmPrincipal() {
         initComponents();
+        cargarTabla();
         setLocationRelativeTo(this);
     }
     
@@ -35,6 +39,25 @@ public class FrmPrincipal extends javax.swing.JFrame {
             tblListadoPersonas.updateUI();
             jPanel2.setVisible(true);
         }else jPanel2.setVisible(false);
+    }
+    
+    public void crearPersona(){
+        diaPersona = new DialogPersona(this, true);
+        diaPersona.setVisible(true);
+        Persona p = diaPersona.getPersona();
+        if(p != null){
+            pc.getPersonas()[tblListadoPersonas.getSelectedRow()].setApellidos(p.getApellidos());
+            pc.getPersonas()[tblListadoPersonas.getSelectedRow()].setNombres(p.getNombres());
+            pc.getPersonas()[tblListadoPersonas.getSelectedRow()].setFechaNacimiento(p.getFechaNacimiento());
+            pc.getPersonas()[tblListadoPersonas.getSelectedRow()].setGenero(p.getGenero());
+        }
+        try {
+            pc.calcularEdades();
+        } catch (FechaInvalidaException ex) {
+            
+        }
+        pc.imprimirArreglo();
+        cargarTabla();
     }
 
     /**
@@ -55,8 +78,14 @@ public class FrmPrincipal extends javax.swing.JFrame {
         tblListadoPersonas = new javax.swing.JTable();
         btnAgregarPersona = new javax.swing.JButton();
         btnEditarPersona = new javax.swing.JButton();
+        btnPracticas = new javax.swing.JButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Personas");
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Persona"));
 
@@ -112,6 +141,9 @@ public class FrmPrincipal extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblListadoPersonasMouseClicked(evt);
             }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                tblListadoPersonasMousePressed(evt);
+            }
         });
         jScrollPane1.setViewportView(tblListadoPersonas);
 
@@ -131,6 +163,14 @@ public class FrmPrincipal extends javax.swing.JFrame {
             }
         });
 
+        btnPracticas.setText("Agregar Indicaciones");
+        btnPracticas.setEnabled(false);
+        btnPracticas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPracticasActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -144,7 +184,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
                         .addComponent(btnAgregarPersona)
                         .addGap(18, 18, 18)
                         .addComponent(btnEditarPersona)
-                        .addGap(11, 11, 11)))
+                        .addGap(18, 18, 18)
+                        .addComponent(btnPracticas)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -155,9 +196,32 @@ public class FrmPrincipal extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAgregarPersona)
-                    .addComponent(btnEditarPersona))
+                    .addComponent(btnEditarPersona)
+                    .addComponent(btnPracticas))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
+
+        jMenu1.setText("File");
+
+        jMenuItem1.setText("Guardar");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
+
+        jMenuItem2.setText("Cargar");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem2);
+
+        jMenuBar1.add(jMenu1);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -166,41 +230,28 @@ public class FrmPrincipal extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(29, 29, 29)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(41, 41, 41)
+                .addGap(18, 18, 18)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAgregarPersonaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarPersonaActionPerformed
-        diaPersona = new DialogPersona(this, true);
-        diaPersona.setVisible(true);
-        Persona p = diaPersona.getPersona();
-        if(p != null){
-            pc.getPersonas()[tblListadoPersonas.getSelectedRow()].setApellidos(p.getApellidos());
-            pc.getPersonas()[tblListadoPersonas.getSelectedRow()].setNombres(p.getNombres());
-            pc.getPersonas()[tblListadoPersonas.getSelectedRow()].setFechaNacimiento(p.getFechaNacimiento());
-            pc.getPersonas()[tblListadoPersonas.getSelectedRow()].setGenero(p.getGenero());
-        }
-        try {
-            pc.calcularEdades();
-        } catch (FechaInvalidaException ex) {
-            
-        }
-        pc.imprimirArreglo();
-        cargarTabla();
-        
+        crearPersona();
+        btnAgregarPersona.setEnabled(false);
+        btnEditarPersona.setEnabled(true);
+        btnPracticas.setEnabled(true);
     }//GEN-LAST:event_btnAgregarPersonaActionPerformed
 
     private void btnCrear1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrear1ActionPerformed
@@ -210,12 +261,64 @@ public class FrmPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCrear1ActionPerformed
 
     private void tblListadoPersonasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblListadoPersonasMouseClicked
-        btnAgregarPersona.setEnabled(true);
+        if(pc.getPersonas()[tblListadoPersonas.getSelectedRow()].getFechaNacimiento() == null){
+            btnAgregarPersona.setEnabled(true);
+            btnEditarPersona.setEnabled(false);
+            btnPracticas.setEnabled(false);
+        }else{
+            btnAgregarPersona.setEnabled(false);
+            btnEditarPersona.setEnabled(true);
+            btnPracticas.setEnabled(true);
+            
+        }
+        
+        
     }//GEN-LAST:event_tblListadoPersonasMouseClicked
 
     private void btnEditarPersonaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarPersonaActionPerformed
-        // TODO add your handling code here:
+        Integer i = JOptionPane.showConfirmDialog(this, "¿Esta seguro que quiere editar a ");
+        if(i == JOptionPane.OK_OPTION){
+            crearPersona();
+        }else{
+            this.dispose();
+        }
+        
     }//GEN-LAST:event_btnEditarPersonaActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        if (pc.getPersonas() != null){
+            if (Utilidades.guardarArchivoJSON(pc.getPersonas())){
+                JOptionPane.showMessageDialog(this, "Se ha guardado el archivo","Exito", JOptionPane.INFORMATION_MESSAGE);
+            } else JOptionPane.showMessageDialog(this, "No se genero el archivo", "Error", JOptionPane.ERROR_MESSAGE);
+        }else JOptionPane.showMessageDialog(this, "Genere un listado de personas", "Error", JOptionPane.ERROR_MESSAGE);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        pc = new PersonaController(1);
+        pc.setPersonas(Utilidades.cargarArchivoJSON());
+        
+        if (pc.getPersonas()!= null){
+            btnCrear1.setEnabled(false);
+            cargarTabla();
+        } else JOptionPane.showMessageDialog(this, "No pudo cargar el archivo", "Error", JOptionPane.ERROR_MESSAGE);
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void tblListadoPersonasMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblListadoPersonasMousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tblListadoPersonasMousePressed
+
+    private void btnPracticasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPracticasActionPerformed
+        diaPractica = new DialogPracticas(this, true);
+        diaPractica.setVisible(true);
+        Persona p = diaPractica.getPersona();
+        if (p != null){
+            pc.getPersonas()[tblListadoPersonas.getSelectedRow()].setPracticas(p.getPracticas());
+            cargarTabla();
+        }
+        
+        btnPracticas.setEnabled(false);
+        
+    }//GEN-LAST:event_btnPracticasActionPerformed
 
     /**
      * @param args the command line arguments
@@ -263,8 +366,13 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton btnAgregarPersona;
     private javax.swing.JButton btnCrear1;
     private javax.swing.JButton btnEditarPersona;
+    private javax.swing.JButton btnPracticas;
     private javax.swing.JComboBox<String> cbxNroPersonas;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;

@@ -76,7 +76,7 @@ public class PersonaController {
             }
             
         }
-        determinarBuenasPracticas();
+//        determinarBuenasPracticas();
     }
     
     //Esto es para una sola persona
@@ -94,25 +94,25 @@ public class PersonaController {
         return p.getEdad();
     }
     
-    public void determinarBuenasPracticas(){
-        for (int i = 0; i < personas.length; i++) {
-            if(personas[i].getFechaNacimiento()!=null){
-                if(personas[i].getClasificacion().equalsIgnoreCase("NINIO")){
-                    personas[i].setPracticas("PracticasNinio");
-                }else{
-                    if(personas[i].getClasificacion().equalsIgnoreCase("JOVEN")){
-                        personas[i].setPracticas("PracticasJoven");
-                    }else if(personas[i].getClasificacion().equalsIgnoreCase("ADULTO")){
-                        personas[i].setPracticas("PracticasAdulto");
-                    }else{
-                        personas[i].setPracticas("PracticasTerceraEdad");
-                    }
-                }
-            }else{
-                personas[i].setPracticas(Ncomun);
-            }
-        }
-    }
+//    public void determinarBuenasPracticas(){
+//        for (int i = 0; i < personas.length; i++) {
+//            if(personas[i].getFechaNacimiento()!=null){
+//                if(personas[i].getClasificacion().equalsIgnoreCase("NINIO")){
+//                    personas[i].setPracticas("PracticasNinio");
+//                }else{
+//                    if(personas[i].getClasificacion().equalsIgnoreCase("JOVEN")){
+//                        personas[i].setPracticas("PracticasJoven");
+//                    }else if(personas[i].getClasificacion().equalsIgnoreCase("ADULTO")){
+//                        personas[i].setPracticas("PracticasAdulto");
+//                    }else{
+//                        personas[i].setPracticas("PracticasTerceraEdad");
+//                    }
+//                }
+//            }else{
+//                personas[i].setPracticas(Ncomun);
+//            }
+//        }
+//    }
     
      public void imprimirArreglo(){
         for (Persona persona1 : personas) {

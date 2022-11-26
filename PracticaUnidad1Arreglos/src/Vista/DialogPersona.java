@@ -6,6 +6,8 @@ package Vista;
 
 import Modelo.Persona;
 import Vista.Utilidades.Utilidades;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import javax.swing.JOptionPane;
 
 /**
@@ -162,11 +164,21 @@ public class DialogPersona extends javax.swing.JDialog {
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
         this.persona = crearPersona();
+        
+        
+        
         if(persona.getApellidos().isEmpty() || persona.getNombres().isEmpty() || persona.getFechaNacimiento().isEmpty()){
             JOptionPane.showMessageDialog(this, "Rellene todos los campos","Error", JOptionPane.ERROR_MESSAGE);
+            
         }else{
-            JOptionPane.showMessageDialog(this, "Persona ingresada correctamente","Exito", JOptionPane.INFORMATION_MESSAGE);
-            this.dispose();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate fechaNacimiento = LocalDate.parse(persona.getFechaNacimiento(), formatter);
+            if(fechaNacimiento.isAfter(LocalDate.now()) || fechaNacimiento.getMonthValue() > 12){
+                JOptionPane.showMessageDialog(this, "Ingrese una fecha válida","Error", JOptionPane.ERROR_MESSAGE);
+            }else{
+                JOptionPane.showMessageDialog(this, "Persona ingresada correctamente","Exito", JOptionPane.INFORMATION_MESSAGE);
+                this.dispose();
+            }
         }
         
     }//GEN-LAST:event_btnAgregarActionPerformed

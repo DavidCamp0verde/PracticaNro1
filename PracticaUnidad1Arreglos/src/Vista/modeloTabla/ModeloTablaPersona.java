@@ -31,7 +31,7 @@ public class ModeloTablaPersona extends AbstractTableModel{
             case 1: return "Genero";
             case 2: return "Edad (anios)";
             case 3: return "Clasificación";
-            case 4: return "Practicas";
+            case 4: return "Indicaciones";
             default: return null;
         }
     }
